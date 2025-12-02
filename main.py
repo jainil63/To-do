@@ -3,10 +3,6 @@ import os
 FILE_NAME = "tasks.txt"
 Tasks = []
 
-
-# -------------------------------
-# Load tasks from file at startup
-# -------------------------------
 def load_tasks():
     global Tasks
     if os.path.exists(FILE_NAME):
@@ -15,25 +11,20 @@ def load_tasks():
     else:
         Tasks = []
 
-
-# -------------------------------
-# Save tasks to file
-# -------------------------------
 def save_tasks():
     with open(FILE_NAME, "w") as file:
         for task in Tasks:
             file.write(task + "\n")
-
 
 def show_menu():
     print("""
 ===== TO-DO LIST MENU =====
 1. Add Task
 2. View Tasks
-3. Delete Task
-4. Exit
+3. Update Task
+4. Delete Task
+5. Exit
 """)
-
 
 def add_task():
     task_description = input("Enter task description: ")
@@ -41,14 +32,36 @@ def add_task():
     save_tasks()
     print("Task added & saved.")
 
-
 def view_tasks():
     if not Tasks:
         print("No tasks available.")
         return
     
+    print("\n--- Your Tasks ---")
     for index, item in enumerate(Tasks, start=1):
         print(f"{index}. {item}")
+    print()
+
+def update_task():
+    if not Tasks:
+        print("No tasks available to update.")
+        return
+
+    view_tasks()
+    choice = input("Enter task number to update: ")
+
+    if choice.isdigit():
+        index = int(choice) - 1
+        if 0 <= index < len(Tasks):
+            new_text = input("Enter updated task text: ")
+            old_task = Tasks[index]
+            Tasks[index] = new_text
+            save_tasks()
+            print(f"Task Updated:\nFrom: {old_task}\nTo:   {new_text}")
+        else:
+            print("Invalid task number.")
+    else:
+        print("Please enter a valid number.")
 
 
 def delete_task():
@@ -58,8 +71,7 @@ def delete_task():
 
     print("You can delete by task number OR task name.")
     choice = input("Enter task number or exact task name: ")
-    
-    # Delete by number
+
     if choice.isdigit():
         index = int(choice) - 1
         if 0 <= index < len(Tasks):
@@ -69,7 +81,6 @@ def delete_task():
         else:
             print("Invalid task number.")
     
-    # Delete by task name
     else:
         if choice in Tasks:
             Tasks.remove(choice)
@@ -78,12 +89,8 @@ def delete_task():
         else:
             print("Task not found.")
 
-
-# Load existing tasks when program starts
 load_tasks()
 
-
-# Main loop
 while True:
     show_menu()
     choice = input("Enter your choice: ")
@@ -93,8 +100,10 @@ while True:
     elif choice == "2":
         view_tasks()
     elif choice == "3":
-        delete_task()
+        update_task()
     elif choice == "4":
+        delete_task()
+    elif choice == "5":
         print("Goodbye! Tasks saved.")
         break
     else:
