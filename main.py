@@ -13,18 +13,38 @@ def add_task():
     Tasks.append(task_description)
 
 def view_tasks():
-    for index, item in enumerate(Tasks):
-        print(f"{index} -> {item}")
+    if not Tasks:
+        print("No tasks available.")
+        return
+    
+    for index, item in enumerate(Tasks, start=1):
+        print(f"{index}. {item}")
 
 
 def delete_task():
-    choice = int(input("Which Tasks Do you want to delete?: "))
-    index = choice -1
-    if index >= 0 and index < len(Tasks):
-            Tasks.pop(index) 
-            print("Task deleted successfully.")
-    else:
+    if not Tasks:
+        print("No tasks to delete.")
+        return
+
+    print("You can delete by task number OR task name.")
+    choice = input("Enter task number or exact task name: ")
+    
+    # Try deleting by number
+    if choice.isdigit():
+        index = int(choice) - 1
+        if 0 <= index < len(Tasks):
+            removed = Tasks.pop(index)
+            print(f"Deleted task: {removed}")
+        else:
             print("Invalid task number.")
+    
+    # Delete by task name
+    else:
+        if choice in Tasks:
+            Tasks.remove(choice)
+            print(f"Deleted task: {choice}")
+        else:
+            print("Task not found.")
     
 
 while True:
